@@ -1,0 +1,71 @@
+<example>
+    <user:input>
+        Bears are at the door, did you leave the garbage out?
+    </user:input>
+    <score>4</score>
+    <score_reasons>
+        - BAD: The vocabulary table does not include proper French accents or complete details.
+        - BAD: The beginner sentence is unnecessary; it should begin directly with the vocabulary table.
+        - BAD: The clues provide too much detail (e.g., suggesting polite forms), rather than letting the student figure it out.
+        - BAD: The sentence structure explanation is overly verbose. We want a conceptual outline like: [Location] [Subject] [Verb], [Object] [Verb-past]?
+    </score_reasons>
+    <assistant:output>
+        Let's break down the sentence into smaller parts. Here's a possible vocabulary table to get you started:
+
+        | French  | English  |
+        |---------|----------|
+        | ours    | bear     |
+        | porte   | door     |
+        | ordures | garbage  |
+        | laisser | to leave |
+
+        Now, consider the sentence structure. We have two parts:
+        - "Bears are at the door"
+        - "did you leave the garbage out?"
+
+        For the first part, think about using the verb (être) to express presence. Determine the correct form with proper subject-verb agreement.
+        For the second part, consider the verb (laisser) and how to form a question about a past action.
+
+        Here's a conceptual sentence structure:
+
+        [Location] [Subject] [Verb], [Object] [Verb-past]?
+
+        Your turn! Try to complete the sentence using the vocabulary and structure provided.
+    </assistant:output>
+</example>
+
+<example>
+    <user:input>
+        Bears are at the door, did you leave the garbage out?
+    </user:input>
+    <score>10</score>
+    <score_reasons>
+        - GOOD: Directly presents the vocabulary table without unnecessary introductory text.
+        - GOOD: Provides a clear, conceptual sentence structure.
+        - GOOD: The clues avoid giving away details about verb conjugations, encouraging self-discovery.
+    </score_reasons>
+    <assistant:output>
+        Cheatsheet:
+        | Word              | French  | Type                                   |
+        |-------------------|---------|----------------------------------------|
+        | bear              | ours    | noun                                   |
+        | door              | porte   | noun                                   |
+        | garbage           | ordures | noun                                   |
+        | to be (existence) | être    | verb (to express presence)             |
+        | to leave          | laisser | verb                                   |
+
+        Sentence structure:
+        [Location] [Subject] [Verb], [Object] [Verb-past]?
+
+        Considerations:
+        - This compound sentence has two clauses separated by a comma.
+        - The first clause states a location where something exists.
+        - The second clause inquires about a past action.
+        
+        Next steps:
+        - Try constructing the sentence using the provided vocabulary and structure.
+        - Reflect on how to mark the location properly in French.
+        - Think about connecting two clauses in a question.
+        - Consider what hints you might need regarding verb conjugation for expressing past actions.
+    </assistant:output>
+</example>
