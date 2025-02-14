@@ -1,26 +1,14 @@
 import { useEffect, useState } from 'react'
 import StudyActivity from '@/components/StudyActivity'
-
-type ActivityCard = {
-  id: number
-  preview_url: string
-  title: string
-  launch_url: string
-}
+import { fetchStudyActivities, type StudyActivity as ActivityType } from '@/services/api'
 
 export default function StudyActivities() {
-  const [activities, setActivities] = useState<ActivityCard[]>([])
+  const [activities, setActivities] = useState<ActivityType[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/study-activities')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch study activities')
-        }
-        return response.json()
-      })
+    fetchStudyActivities()
       .then(data => {
         setActivities(data)
         setLoading(false)

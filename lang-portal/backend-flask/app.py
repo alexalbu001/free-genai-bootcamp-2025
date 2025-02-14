@@ -9,51 +9,26 @@ import routes.study_sessions
 import routes.dashboard
 import routes.study_activities
 
-def get_allowed_origins(app):
-    try:
-        cursor = app.db.cursor()
-        cursor.execute('SELECT url FROM study_activities')
-        urls = cursor.fetchall()
-        # Convert URLs to origins (e.g., https://example.com/app -> https://example.com)
-        origins = set()
-        for url in urls:
-            try:
-                from urllib.parse import urlparse
-                parsed = urlparse(url['url'])
-                origin = f"{parsed.scheme}://{parsed.netloc}"
-                origins.add(origin)
-            except:
-                continue
-        return list(origins) if origins else ["*"]
-    except:
-        return ["*"]  # Fallback to allow all origins if there's an error
-
 def create_app(test_config=None):
     app = Flask(__name__)
     
     if test_config is None:
         app.config.from_mapping(
-            DATABASE='words.db'
+            DATABASE='words.db',
+            CORS_ORIGINS=["http://localhost:8080", "http://localhost:5173"]
         )
     else:
         app.config.update(test_config)
     
-    # Initialize database first since we need it for CORS configuration
+    # Initialize database
     app.db = Db(database=app.config['DATABASE'])
     
-    # Get allowed origins from study_activities table
-    allowed_origins = get_allowed_origins(app)
-    
-    # In development, add localhost to allowed origins
-    if app.debug:
-        allowed_origins.extend(["http://localhost:8080", "http://127.0.0.1:8080"])
-    
-    # Configure CORS with combined origins
+    # Configure CORS using config
     CORS(app, resources={
         r"/*": {
-            "origins": allowed_origins,
+            "origins": app.config['CORS_ORIGINS'],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization"]
+            "allow_headers": ["Content-Type"]
         }
     })
 
@@ -62,7 +37,7 @@ def create_app(test_config=None):
     def close_db(exception):
         app.db.close()
 
-    # load routes -----------
+    # Register routes
     routes.words.load(app)
     routes.groups.load(app)
     routes.study_sessions.load(app)
@@ -71,7 +46,14 @@ def create_app(test_config=None):
     
     return app
 
-app = create_app()
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app = create_app()
+    print("Starting Flask server...")
+    print("Database path:", app.config['DATABASE'])
+    print("CORS settings:", app.config['CORS_ORIGINS'])
+    
+    try:
+        app.run(debug=True, port=3000, host='127.0.0.1')
+        print("Server started successfully")
+    except Exception as e:
+        print(f"Failed to start server: {str(e)}")

@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useNavigation } from '@/context/NavigationContext'
-import { createStudySession } from '@/services/api'
+import { createStudySession, fetchStudyActivity } from '@/services/api'
 
 type Group = {
   id: number
@@ -38,11 +38,7 @@ export default function StudyActivityLaunch() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/study-activities/${id}/launch`)
-      .then(response => {
-        if (!response.ok) throw new Error('Failed to fetch launch data')
-        return response.json()
-      })
+    fetchStudyActivity(id)
       .then(data => {
         setLaunchData(data)
         setCurrentStudyActivity(data.activity)

@@ -1,0 +1,22 @@
+{
+  "activities": [
+    {
+      "name": "Vocabulary Quiz",
+      "url": "http://localhost:3000/activities/quiz",
+      "thumbnail_url": "https://example.com/thumbnail.jpg",
+      "description": "Practice your vocabulary with flashcards"
+    },
+    {
+      "name": "Memory Game",
+      "url": "http://localhost:3000/activities/memory",
+      "thumbnail_url": "https://example.com/memory.jpg",
+      "description": "Match pairs of words to improve memory"
+    },
+    {
+      "name": "Writing Practice",
+      "url": "http://localhost:3000/activities/writing",
+      "thumbnail_url": "https://example.com/writing.jpg",
+      "description": "Practice writing words and phrases"
+    }
+  ]
+} 
