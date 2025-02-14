@@ -1,0 +1,4 @@
+---
+description: Rules for flask and sqlite3
+globs: /backend-flask
+---
