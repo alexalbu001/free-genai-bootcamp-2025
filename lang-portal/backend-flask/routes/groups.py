@@ -3,58 +3,41 @@ from flask_cors import cross_origin
 import json
 
 def load(app):
-  @app.route('/groups', methods=['GET'])
+  @app.route('/api/groups', methods=['GET'])
   @cross_origin()
   def get_groups():
     try:
       cursor = app.db.cursor()
-
-      # Get the current page number from query parameters (default is 1)
-      page = int(request.args.get('page', 1))
-      groups_per_page = 10
-      offset = (page - 1) * groups_per_page
-
-      # Get sorting parameters from the query string
-      sort_by = request.args.get('sort_by', 'name')  # Default to sorting by 'name'
-      order = request.args.get('order', 'asc')  # Default to ascending order
-
-      # Validate sort_by and order
-      valid_columns = ['name', 'words_count']
-      if sort_by not in valid_columns:
-        sort_by = 'name'
-      if order not in ['asc', 'desc']:
-        order = 'asc'
-
-      # Query to fetch groups with sorting and the cached word count
+      page = request.args.get('page', 1, type=int)
+      per_page = request.args.get('per_page', 10, type=int)
+      sort_by = request.args.get('sort_by', 'name')
+      order = request.args.get('order', 'asc').upper()
+      
+      offset = (page - 1) * per_page
+      
       cursor.execute(f'''
         SELECT id, name, words_count
         FROM groups
         ORDER BY {sort_by} {order}
         LIMIT ? OFFSET ?
-      ''', (groups_per_page, offset))
-
+      ''', (per_page, offset))
+      
       groups = cursor.fetchall()
-
-      # Query the total number of groups
-      cursor.execute('SELECT COUNT(*) FROM groups')
-      total_groups = cursor.fetchone()[0]
-      total_pages = (total_groups + groups_per_page - 1) // groups_per_page
-
-      # Format the response
-      groups_data = []
-      for group in groups:
-        groups_data.append({
-          "id": group["id"],
-          "group_name": group["name"],
-          "word_count": group["words_count"]
-        })
-
-      # Return groups and pagination metadata
+      
+      # Get total count
+      cursor.execute('SELECT COUNT(*) as count FROM groups')
+      total = cursor.fetchone()['count']
+      
       return jsonify({
-        'groups': groups_data,
-        'total_pages': total_pages,
-        'current_page': page
+        "groups": [{
+          "id": group['id'],
+          "group_name": group['name'],
+          "word_count": group['words_count']
+        } for group in groups],
+        "total_pages": (total + per_page - 1) // per_page,
+        "current_page": page
       })
+      
     except Exception as e:
       return jsonify({"error": str(e)}), 500
 

@@ -4,74 +4,56 @@ import json
 
 def load(app):
   # Endpoint: GET /words with pagination (50 words per page)
-  @app.route('/words', methods=['GET'])
+  @app.route('/api/words', methods=['GET'])
   @cross_origin()
   def get_words():
     try:
       cursor = app.db.cursor()
-
-      # Get the current page number from query parameters (default is 1)
-      page = int(request.args.get('page', 1))
-      # Ensure page number is positive
-      page = max(1, page)
-      words_per_page = 50
-      offset = (page - 1) * words_per_page
-
-      # Get sorting parameters from the query string
-      sort_by = request.args.get('sort_by', 'kanji')  # Default to sorting by 'kanji'
-      order = request.args.get('order', 'asc')  # Default to ascending order
-
-      # Validate sort_by and order
-      valid_columns = ['kanji', 'romaji', 'english', 'correct_count', 'wrong_count']
-      if sort_by not in valid_columns:
-        sort_by = 'kanji'
-      if order not in ['asc', 'desc']:
-        order = 'asc'
-
-      # Query to fetch words with sorting
+      page = request.args.get('page', 1, type=int)
+      per_page = request.args.get('per_page', 10, type=int)
+      sort_by = request.args.get('sort_by', 'kanji')
+      order = request.args.get('order', 'asc').upper()
+      
+      offset = (page - 1) * per_page
+      
       cursor.execute(f'''
-        SELECT w.id, w.kanji, w.romaji, w.english, 
-            COALESCE(r.correct_count, 0) AS correct_count,
-            COALESCE(r.wrong_count, 0) AS wrong_count
+        SELECT 
+            w.*,
+            COALESCE(wr.correct_count, 0) as correct_count,
+            COALESCE(wr.wrong_count, 0) as wrong_count
         FROM words w
-        LEFT JOIN word_reviews r ON w.id = r.word_id
+        LEFT JOIN word_reviews wr ON w.id = wr.word_id
         ORDER BY {sort_by} {order}
         LIMIT ? OFFSET ?
-      ''', (words_per_page, offset))
-
+      ''', (per_page, offset))
+      
       words = cursor.fetchall()
-
-      # Query the total number of words
-      cursor.execute('SELECT COUNT(*) FROM words')
-      total_words = cursor.fetchone()[0]
-      total_pages = (total_words + words_per_page - 1) // words_per_page
-
-      # Format the response
-      words_data = []
-      for word in words:
-        words_data.append({
-          "id": word["id"],
-          "kanji": word["kanji"],
-          "romaji": word["romaji"],
-          "english": word["english"],
-          "correct_count": word["correct_count"],
-          "wrong_count": word["wrong_count"]
-        })
-
+      
+      # Get total count
+      cursor.execute('SELECT COUNT(*) as count FROM words')
+      total = cursor.fetchone()['count']
+      
       return jsonify({
-        "words": words_data,
-        "total_pages": total_pages,
+        "words": [{
+          "id": word['id'],
+          "kanji": word['kanji'],
+          "romaji": word['romaji'],
+          "english": word['english'],
+          "correct_count": word['correct_count'],
+          "wrong_count": word['wrong_count']
+        } for word in words],
+        "total_pages": (total + per_page - 1) // per_page,
         "current_page": page,
-        "total_words": total_words
+        "total_words": total
       })
-
+      
     except Exception as e:
       return jsonify({"error": str(e)}), 500
     finally:
       app.db.close()
 
-  # Endpoint: GET /words/:id to get a single word with its details
-  @app.route('/words/<int:word_id>', methods=['GET'])
+  # Endpoint: GET /api/words/:id to get a single word with its details
+  @app.route('/api/words/<int:word_id>', methods=['GET'])
   @cross_origin()
   def get_word(word_id):
     try:

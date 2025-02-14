@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'http://127.0.0.1:3000/api';
 
 // Group types
 export interface Group {
@@ -206,7 +206,7 @@ export async function fetchStudySessions(
   perPage: number = 10
 ): Promise<StudySessionsResponse> {
   const response = await fetch(
-    `${API_BASE_URL}/api/study-sessions?page=${page}&per_page=${perPage}`
+    `${API_BASE_URL}/study-sessions?page=${page}&per_page=${perPage}`
   );
   if (!response.ok) {
     throw new Error('Failed to fetch study sessions');
@@ -253,3 +253,36 @@ export const fetchStudyStats = async (): Promise<StudyStats> => {
   }
   return response.json();
 };
+
+export interface StudyActivity {
+  id: number;
+  title: string;
+  launch_url: string;
+  preview_url: string;
+}
+
+export async function fetchStudyActivities(): Promise<StudyActivity[]> {
+  const response = await fetch(`${API_BASE_URL}/study-activities`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch study activities');
+  }
+  return response.json();
+}
+
+export interface LaunchData {
+  activity: StudyActivity;
+  groups: {
+    id: number;
+    name: string;
+  }[];
+}
+
+export async function fetchStudyActivity(id: string | undefined): Promise<LaunchData> {
+  if (!id) throw new Error('Activity ID is required');
+  
+  const response = await fetch(`${API_BASE_URL}/study-activities/${id}/launch`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch study activity');
+  }
+  return response.json();
+}
