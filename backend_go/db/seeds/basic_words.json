@@ -1,0 +1,21 @@
+{
+  "group_name": "Basic Words",
+  "words": [
+    {
+      "french": "bonjour",
+      "english": "hello"
+    },
+    {
+      "french": "au revoir",
+      "english": "goodbye"
+    },
+    {
+      "french": "merci",
+      "english": "thank you"
+    },
+    {
+      "french": "s'il vous plaît",
+      "english": "please"
+    }
+  ]
+} 

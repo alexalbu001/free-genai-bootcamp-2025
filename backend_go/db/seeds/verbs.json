@@ -1,0 +1,25 @@
+{
+  "group_name": "Common Verbs",
+  "words": [
+    {
+      "french": "être",
+      "english": "to be"
+    },
+    {
+      "french": "avoir",
+      "english": "to have"
+    },
+    {
+      "french": "aller",
+      "english": "to go"
+    },
+    {
+      "french": "faire",
+      "english": "to do/make"
+    },
+    {
+      "french": "dire",
+      "english": "to say"
+    }
+  ]
+} 

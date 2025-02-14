@@ -16,7 +16,7 @@ The API will be built using GIN and return JSON
 MAGE is  task runner for GO
 
 ## Directory Structure
-```
+```text
 backend_go/
 ├── cmd/
 │   └── server/
@@ -25,8 +25,8 @@ backend_go/
 │   ├── handlers/   # HTTP handlers organized by feature (dashboard, words, groups, etc.)
 │   └── service/    # Business logic
 ├── db/
-│   ├── migrations/
-│   └── seeds/      # For initial data population
+│   ├── migrations/ # Database migration files
+│   └── seeds/      # Seed data files
 ├── magefile.go
 ├── go.mod
 └── words.db
@@ -366,8 +366,7 @@ Example response:
 {
   "items": [
     {
-      "japanese": "こんにちは",
-      "romaji": "konnichiwa",
+      "french": "bonjour",
       "english": "hello",
       "correct_count": 5,
       "wrong_count": 2

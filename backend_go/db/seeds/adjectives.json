@@ -1,0 +1,25 @@
+{
+  "group_name": "Common Adjectives",
+  "words": [
+    {
+      "french": "grand",
+      "english": "big/tall"
+    },
+    {
+      "french": "petit",
+      "english": "small"
+    },
+    {
+      "french": "bon",
+      "english": "good"
+    },
+    {
+      "french": "mauvais",
+      "english": "bad"
+    },
+    {
+      "french": "beau",
+      "english": "beautiful"
+    }
+  ]
+} 
